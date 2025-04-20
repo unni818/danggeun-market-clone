@@ -49,4 +49,18 @@ async def get_image(item_id):
                             """).fetchone()[0]
     return Response(content = bytes.fromhex(image_bytes), media_type = 'image/*')
 
+# 63강 추가
+@app.post('/signup')
+def signup(id: Annotated[str, Form()], 
+        password: Annotated[str, Form()],
+        # 64강 추가 - dbeaver 연결하기
+        name : Annotated[str, Form()],
+        email : Annotated[str, Form()]):
+    cur.execute(f"""
+                INSERT INTO users(id, name, email, password)
+                VALUES ('{id}', '{name}', '{email}', '{password}')
+                """)
+    con.commit() # 64강 추가 - dbeaver 연결하기 end
+    return '200'
+
 app.mount('/', StaticFiles(directory='frontend', html = True), name = 'frontend')
